@@ -31,23 +31,23 @@ def thread_worker(args):
     while not domain_queue.empty():
         try:
             domain = domain_queue.get()
-            if args.verbose is not None:
+            if args.verbose:
                 print("Accessing dmarc record for "+domain)
             try:
                 answers = dns.resolver.query('_dmarc.' + format(domain),'txt')
             except Exception as e:
                 print_queue.put(domain)
             if len(answers) > 0:
-                print("Found a dmarc record... "+domain)
+                if args.verbose:
+                    print("Found a dmarc record... "+domain)
                 if (re.match(r'\sp=none', str(answers[0]))):
-                    if args.verbose is not None:
+                    if args.verbose:
                         print(domain + " dmarc record in reporting mode only, can still spoof")
                     print_queue.put(domain)
                 else:
-                    if args.verbose is not None:
+                    if args.verbose:
                        print(domain + " has hardened dmarc record")
             else:
-                answers = ""
                 print("Something went wrong")
         except Exception as e:
             if args.verbose is not None:
@@ -72,7 +72,7 @@ def main():
     with args.file as domainFile:
         for line in domainFile:
             domain_queue.put(line.strip())
-    if args.verbose is not None:
+    if args.verbose:
         print("Records read: " + str(domain_queue.qsize()) )
     threads = []
     start = time.perf_counter()
