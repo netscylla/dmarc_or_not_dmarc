@@ -44,7 +44,6 @@ The script is actually really basic and easy to use.  You make a file of the ema
 ```                            
 
 ## Author
-Andy @ netscylla
-Peter @ peshev
-@netscylla
-@peshev
+Andy @netscylla
+
+Peter @peshev
