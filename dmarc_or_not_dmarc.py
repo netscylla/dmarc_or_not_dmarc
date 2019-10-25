@@ -14,7 +14,7 @@ except ModuleNotFoundError:
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Threaded script to analyse domains for non-existant or vulnerable dmarc implementations.")
+        description="Threaded script to analyse domains for non-existent or vulnerable DMARC implementations.")
     parser.add_argument("file", type=argparse.FileType('r'),
                         help="Input file containing one domain per line.")
     parser.add_argument("-v", "--verbose", action="store_true",
@@ -48,7 +48,7 @@ def test_domain_dmarc(domain):
         verbose("[{}] Querying DMARC record ... ".format(domain))
         try:
             answers = dns.resolver.query('_dmarc.' + format(domain), 'txt')
-        except Exception:
+        except dns.exception.DNSException:
             return domain
         if len(answers) > 0:
             verbose("[{}] Found a DMARC record ...".format(domain))
