@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys
+import sys, os
 import argparse
 import time
 import dns.resolver
@@ -11,6 +11,7 @@ try:
 except ModuleNotFoundError:
     tqdm = None
 
+resultlist=[]
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -21,9 +22,9 @@ def parse_args():
                         help="Display debug messages.")
     parser.add_argument("-t", "--threads", type=int, default=20,
                         help="Number of threads to run with. Default is 20")
-    parser.add_argument("-o", "--output", type=argparse.FileType('w'), default=sys.stdout,
+    parser.add_argument("-o", "--output", type=argparse.FileType('w'), default="report.txt",
                         help="Output file containing one vulnerable domain per line. If omitted, vulnerable domains "
-                             "will be output on stdout")
+                             "will be output to report.txt")
 
     return parser.parse_args()
 
@@ -97,6 +98,11 @@ if __name__ == "__main__":
                 total=len(domains)
         ):
             if result:
+                resultlist.append(result)
                 out_file.write(result + "\n")
                 out_file.flush()
+    out_file.close()
     print("Done!  Total execution time: ", time.perf_counter() - start, " seconds")
+    with open (out_file.name) as x:
+        print(x.read())
+    x.close()
